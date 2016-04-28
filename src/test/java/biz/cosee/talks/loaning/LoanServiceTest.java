@@ -5,6 +5,7 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
+import org.mockito.Spy;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
 
@@ -21,6 +22,9 @@ public class LoanServiceTest {
 
     @Mock
     private LoanRepository loanRepository;
+
+    @Spy
+    private LoanChecker loanChecker = new LoanChecker();
 
     @InjectMocks
     private LoanService loanService;
