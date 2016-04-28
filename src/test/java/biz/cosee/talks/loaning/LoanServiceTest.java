@@ -23,7 +23,7 @@ public class LoanServiceTest {
 
     private User user = new User();
 
-    private Book book = new Book();
+    private Book sampleBook = new Book();
 
     @Before
     public void mockLoanRepository() {
@@ -43,7 +43,7 @@ public class LoanServiceTest {
     @Test
     public void createLoanSuccessfully() {
 
-        Loan loan = new LoanService(loanRepository).createLoanStartingNowAndStore(user, book);
+        Loan loan = new LoanService(loanRepository).createLoanStartingNowAndStore(user, sampleBook);
 
         verifyLoanPropertiesAreCorrect(loan);
         verifyPersistentLoanIsReturned(loan);
@@ -52,7 +52,7 @@ public class LoanServiceTest {
     private void verifyLoanPropertiesAreCorrect(Loan loan) {
         assertThat(loan).isNotNull();
         assertThat(loan.getUser()).isEqualTo(user);
-        assertThat(loan.getBook()).isEqualTo(book);
+        assertThat(loan.getBook()).isEqualTo(sampleBook);
         assertThat(loan.getStartDate()).isEqualToIgnoringHours(new Date());
     }
 
@@ -64,10 +64,27 @@ public class LoanServiceTest {
     @Test (expected = DuplicateLoanException.class)
     public void failOnDuplicateLoan() {
 
+        createLoanHistoryContainingSampleBook();
+
+        new LoanService(loanRepository).createLoanStartingNowAndStore(user, sampleBook);
+    }
+
+    private void createLoanHistoryContainingSampleBook() {
         user.setLoans(asList(
-                new Loan(user, book, new Date())
+                new Loan(user, sampleBook, new Date())
+        ));
+    }
+
+    @Test (expected = LoanLimitExceededException.class)
+    public void failOnLoanLimitExceeded() {
+        user.setLoans(asList(
+                new Loan(user, new Book(), new Date()),
+                new Loan(user, new Book(), new Date()),
+                new Loan(user, new Book(), new Date()),
+                new Loan(user, new Book(), new Date()),
+                new Loan(user, new Book(), new Date())
         ));
 
-        new LoanService(loanRepository).createLoanStartingNowAndStore(user, book);
+        new LoanService(loanRepository).createLoanStartingNowAndStore(user, sampleBook);
     }
 }

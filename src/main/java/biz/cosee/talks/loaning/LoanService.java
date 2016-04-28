@@ -21,6 +21,10 @@ public class LoanService {
             throw new DuplicateLoanException();
         }
 
+        if (user.getLoans().size() >= 5) {
+            throw new LoanLimitExceededException();
+        }
+
         return loanRepository.save(loan);
     }
 
