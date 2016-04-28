@@ -7,21 +7,31 @@ import org.springframework.boot.test.SpringApplicationConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import java.util.Date;
+
 import static org.assertj.core.api.Assertions.assertThat;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = TddInActionApplication.class)
 @WebAppConfiguration
-public class UserRepositoryIntegrationTest {
+public class LoanRepositoryIntegrationTest {
 
     @Autowired
     private UserRepository userRepository;
 
-    @Test
-    public void storeUser() {
-        User savedUser = userRepository.save(new User("username"));
+    @Autowired
+    private BookRepository bookRepository;
 
-        assertThat(savedUser.getId()).isNotNull();
-        assertThat(userRepository.findOne(savedUser.getId())).isNotNull();
+    @Autowired
+    private LoanRepository loanRepository;
+
+    @Test
+    public void saveLoan() {
+
+        User user = userRepository.save(new User());
+        Book book = bookRepository.save(new Book());
+
+        Loan loan = loanRepository.save(new Loan(user, book, new Date()));
+        assertThat(loan.getId()).isNotNull();
     }
 }

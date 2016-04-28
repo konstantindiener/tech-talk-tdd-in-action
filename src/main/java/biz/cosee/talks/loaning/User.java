@@ -16,6 +16,9 @@ public class User {
 
     private String username;
 
+    @OneToMany(mappedBy = "user")
+    private List<Loan> loans = new ArrayList();
+
     public User() {
     }
 
@@ -29,5 +32,14 @@ public class User {
 
     public void setId(Long id) {
         this.id = id;
+    }
+
+
+    public void setLoans(List<Loan> loans) {
+        this.loans = loans;
+    }
+
+    public List<Loan> getLoans() {
+        return loans;
     }
 }

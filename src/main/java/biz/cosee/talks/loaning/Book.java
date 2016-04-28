@@ -17,7 +17,7 @@ public class Book {
     }
 
     public Book(String title) {
-        this.title = title;
+        this.title =  title;
     }
 
     public Long getId() {

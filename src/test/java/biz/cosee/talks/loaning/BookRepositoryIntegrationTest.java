@@ -9,15 +9,15 @@ import org.springframework.test.context.web.WebAppConfiguration;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
-/*@RunWith(SpringJUnit4ClassRunner.class)
+@RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = TddInActionApplication.class)
-@WebAppConfiguration*/
+@WebAppConfiguration
 public class BookRepositoryIntegrationTest {
 
     @Autowired
     private BookRepository bookRepository;
 
-    //@Test
+    @Test
     public void storeBook() {
         Book savedBook = bookRepository.save(new Book("title"));
 
