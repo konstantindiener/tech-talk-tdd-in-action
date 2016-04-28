@@ -3,6 +3,7 @@ package biz.cosee.talks.loaning;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.invocation.InvocationOnMock;
 import org.mockito.runners.MockitoJUnitRunner;
@@ -20,6 +21,9 @@ public class LoanServiceTest {
 
     @Mock
     private LoanRepository loanRepository;
+
+    @InjectMocks
+    private LoanService loanService;
 
     private User user = new User();
 
@@ -43,7 +47,7 @@ public class LoanServiceTest {
     @Test
     public void createLoanSuccessfully() {
 
-        Loan loan = new LoanService(loanRepository).createLoanStartingNowAndStore(user, sampleBook);
+        Loan loan = loanService.createLoanStartingNowAndStore(user, sampleBook);
 
         verifyLoanPropertiesAreCorrect(loan);
         verifyPersistentLoanIsReturned(loan);
@@ -66,7 +70,7 @@ public class LoanServiceTest {
 
         createLoanHistoryContainingSampleBook();
 
-        new LoanService(loanRepository).createLoanStartingNowAndStore(user, sampleBook);
+        loanService.createLoanStartingNowAndStore(user, sampleBook);
     }
 
     private void createLoanHistoryContainingSampleBook() {
@@ -77,6 +81,12 @@ public class LoanServiceTest {
 
     @Test (expected = LoanLimitExceededException.class)
     public void failOnLoanLimitExceeded() {
+        createLoanHistoryWithFiveBooks();
+
+        loanService.createLoanStartingNowAndStore(user, sampleBook);
+    }
+
+    private void createLoanHistoryWithFiveBooks() {
         user.setLoans(asList(
                 new Loan(user, new Book(), new Date()),
                 new Loan(user, new Book(), new Date()),
@@ -84,7 +94,5 @@ public class LoanServiceTest {
                 new Loan(user, new Book(), new Date()),
                 new Loan(user, new Book(), new Date())
         ));
-
-        new LoanService(loanRepository).createLoanStartingNowAndStore(user, sampleBook);
     }
 }

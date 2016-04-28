@@ -42,4 +42,8 @@ public class User {
     public List<Loan> getLoans() {
         return loans;
     }
+
+    public boolean hasMoreThanNumberOfLoans(int loanThreshold) {
+        return loans.size() >= loanThreshold;
+    }
 }

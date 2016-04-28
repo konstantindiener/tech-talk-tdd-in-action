@@ -17,15 +17,19 @@ public class LoanService {
     public Loan createLoanStartingNowAndStore(User user, Book book) {
         Loan loan = new Loan(user, book, new Date());
 
+        checkWhetherUserCanCreateLoan(user, book);
+
+        return loanRepository.save(loan);
+    }
+
+    private void checkWhetherUserCanCreateLoan(User user, Book book) {
         if (hasAlreadyLoanedBook(user, book)) {
             throw new DuplicateLoanException();
         }
 
-        if (user.getLoans().size() >= 5) {
+        if (user.hasMoreThanNumberOfLoans(5)) {
             throw new LoanLimitExceededException();
         }
-
-        return loanRepository.save(loan);
     }
 
     private boolean hasAlreadyLoanedBook(User user, Book book) {
